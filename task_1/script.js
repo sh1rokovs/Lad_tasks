@@ -22,7 +22,7 @@ let str = `Старший братец ПОНЕДЕЛЬНИК –
 очень любит угощенье
 `;
 
-let lib = {
+let lib = {                    // библиотека соответствий
     'MONDAY': 'ПОНЕДЕЛЬНИК',
     'TUESDAY': 'ВТОРНИК',
     'WEDNESDAY': 'СРЕДА',
@@ -32,8 +32,6 @@ let lib = {
     'SUNDAY': 'ВОСКРЕСЕНЬЕ',
 }
 
-for (let el of Object.keys(lib)){
-    str = str.replace(lib[el], el)
-}
+for (let el of Object.keys(lib)) str = str.replace(lib[el], el)  // замена слов методом replace
 
 console.log(str)

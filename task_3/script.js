@@ -45,24 +45,26 @@ function getValueRobot(countOfValue) {
     return valueRobot
 }
 
-let countOfValue = +readlineSync.question('Enter count of number: '); // Количество цифр в числе
-let countOfTry = +readlineSync.question('Enter count of try(Infinity = 0): ') // Количество попыток
+console.log('Введите количество цифр в числе: ')
+let countOfValue = +readlineSync.question(); // Количество цифр в числе
+console.log('Введите количество попыток(Бесконечно = 0): ')
+let countOfTry = +readlineSync.question() // Количество попыток
 let valueRobot = getValueRobot(countOfValue) // Получение числа робота
 
 if (countOfTry < 0 || countOfTry === 0) countOfTry = true;
 
 while(countOfTry) {
-    if(countOfTry !== true){ // Если количество попыток задано, то уменьшаем.
-        countOfTry--
-    }
-    let valueHuman = readlineSync.question('Enter number: ') // Вводим свое число
+    if(countOfTry !== true) countOfTry--
+
+    console.log('Введите число: ')
+    let valueHuman = readlineSync.question() // Вводим свое число
     let [countOfCow, countOfBulls, valuesCow, valuesBulls] = checkWin(valueRobot, valueHuman, countOfValue)
 
     if(countOfCow === countOfValue){ // Проверяем выигрыш
-        console.log(`You win, number is - ${valueRobot}`)
+        console.log(`Вы выиграли, номер - ${valueRobot}`)
         countOfTry = false
-    }
-    else { // Иначе показываем количество быков и коров
-        console.log(`Matching numbers are out of place - ${countOfBulls}(${valuesBulls}), Numbers in place - ${countOfCow}(${valuesCow})`)
+    } else { // Иначе показываем количество быков и коров
+        console.log(`Совпадающие числа не на своих местах - ${countOfBulls}(${valuesBulls}),
+         Числа на своих местах - ${countOfCow}(${valuesCow})`)
     }
 }

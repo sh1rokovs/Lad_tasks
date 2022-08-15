@@ -93,7 +93,6 @@ function setHealth(difficult) {
  * @param {object} skill
  */
 function isCooldown(skill) {
-    if (cooldownSkills.length === 0) return false
     for (let elem of cooldownSkills) {
         if (skill.name === elem[0]) return true
     }

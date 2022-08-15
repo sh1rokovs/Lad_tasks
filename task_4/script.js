@@ -115,11 +115,8 @@ function addCooldown(skill) {
  */
 function subCooldown() {
     for (let skill of cooldownSkills) {
-        if (skill[1] === 0) {
-            cooldownSkills.splice(cooldownSkills.indexOf(skill), 1)
-        } else {
-            skill[1]--
-        }
+        skill[1]--
+        if (skill[1] <= 0) cooldownSkills.splice(cooldownSkills.indexOf(skill), 1)
     }
 }
 
@@ -130,8 +127,9 @@ function subCooldown() {
  * @return Object
  */
 function monsterGetMoves() {
-    let move = Math.floor((Math.random() * monster.moves.length))
+    let move = null;
     while (true) {
+        move = Math.floor((Math.random() * monster.moves.length))
         if (isCooldown(monster.moves[move])) {
             continue
         } else {
@@ -142,7 +140,7 @@ function monsterGetMoves() {
 
 /**
  * @name heroGetMoves
- * @description Получение умения монстра для хода.
+ * @description Получение умения героя для хода.
  * @param {number} move
  * @return Object
  */
@@ -185,6 +183,7 @@ function battleMoves(monsterSkill, heroSkill, monsterHealth, heroHealth) {
     return [Math.floor(monsterHealth), Math.floor(heroHealth)]
 }
 
+// skill function
 /**
  * @name heroGetMoves
  * @description Формирование строки с умениями.
@@ -215,32 +214,40 @@ console.log('Сложность:\n' +
     '3. Высокая (10 HP)\n')
 setHealth(readlineSync.question())
 
-let monsterHealth = monster.maxHealth
+let monsterHealth = monster.maxHealth // Задаем здоровья персонажам
 let heroHealth = hero.maxHealth
 
 while (true) {
-    let monsterMovesNames = getSkills(monster)
+    let monsterMovesNames = getSkills(monster) // Получаем информацию об умениях
     let heroMovesNames = getSkills(hero)
 
-    subCooldown()
+    subCooldown() // уменьшаем перезарядку
 
-    if (monsterHealth === 0 && 0 === heroHealth) { console.log('Ничья!'); break; }
-    if (monsterHealth === 0 && 0 !== heroHealth) { console.log('Монстр умер!'); break; }
-    if (monsterHealth !== 0 && 0 === heroHealth) { console.log('Герой погиб!'); break; }
+    // Проверяем на выигрыш, проигрыш или ничью
+    if (monsterHealth <= 0 && 0 >= heroHealth) { console.log('Ничья!'); break; }
+    if (monsterHealth <= 0 && 0 !== heroHealth) { console.log('Монстр умер!'); break; }
+    if (monsterHealth !== 0 && 0 >= heroHealth) { console.log('Герой погиб!'); break; }
 
     console.log(`----------------- battle -----------------\n`+
-        `Monster:${monster.name}, Hero:${hero.name}\n`+
-        `Health:${monsterHealth}, Health:${heroHealth}\n`+
-        `Monster skills:\n${monsterMovesNames}`+
+        `Монстр:${monster.name}, Герой:${hero.name}\n`+
+        `Здоровье:${monsterHealth}, Здоровье:${heroHealth}\n`+
+        `Умения монстра:\n${monsterMovesNames}`+
         `------------------------------------------\n`+
         `Выберите умение:\n${heroMovesNames}`)
 
-    let heroMove = heroGetMoves(+readlineSync.question())
-    let monsterMove = monsterGetMoves()
+    let heroMove = null;
+    while (true) {
+        heroMove = heroGetMoves(+readlineSync.question())
+        if (heroMove) {
+            break
+        }
+        console.log(`Умение на перезарядке, попробуйте другое умение!`)
+    } // получаем умение, если не в перезарядке
+    let monsterMove = monsterGetMoves() // получаем умение монстра
 
     console.log(`Монстр использует умение: ${monsterMove.name}\nГерой использует умение: ${heroMove.name}`)
 
-    let health = battleMoves(monsterMove, heroMove, monsterHealth, heroHealth)
-    monsterHealth = health[0]
+    let health = battleMoves(monsterMove, heroMove, monsterHealth, heroHealth) // Обмен уроном
+    monsterHealth = health[0] // Обновление здоровья персонажей
     heroHealth = health[1]
 }
